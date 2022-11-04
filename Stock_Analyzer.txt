@@ -1,0 +1,96 @@
+
+
+Sub Stock_Analyzer()
+
+'define module variables
+
+        Dim wb As Workbook
+        Dim ws As Worksheet
+        Dim Rng As Range
+
+'define target worksheets
+
+        For Each ws In Worksheets
+
+'define headers
+
+        ws.Cells(1, 9).Value = "Ticker"
+        ws.Cells(1, 10).Value = "Yearly Change"
+        ws.Cells(1, 11).Value = "Percent Change"
+        ws.Cells(1, 12).Value = "Total Stock Volume"
+              
+
+  
+    RowCount = Cells(Rows.Count, "A").End(xlUp).Row
+
+
+
+        Set wb = ThisWorkbook
+        Set Rng = ws.Range("I2")
+        tempstring = "A2:A" & CStr(RowCount) 'Credit for this line: Andrew Kang
+        
+
+' Decleare variables and assign initial values
+
+        Dim ticker As String
+        Dim OpenPrice As Long
+        Dim ClosingPrice As Long
+        Dim TotalVolume As Double
+        Dim YearChange As Double
+        Dim PercentChange As Double
+        Dim OutputRow As Long
+        
+       
+      ticker = ws.Cells(2, 1).Value
+        TotalVolume = ws.Cells(2, 7).Value
+        OpenPrice = ws.Cells(2, 3).Value
+        ClosePrice = ws.Cells(6, 6).Value
+        OutputRow = 2
+
+'finding lastrow
+
+      Dim lastrow As Long
+        
+        lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+
+        
+'Get unique tickers and changes
+
+
+    For i = 2 To lastrow
+
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then 'Credit for this line: Bill
+          
+            ClosePrice = ws.Cells(i, 6)
+            YearChange = ClosePrice - OpenPrice
+            PercentChange = YearChange / OpenPrice
+     
+     
+     'write values
+            ws.Cells(OutputRow, 9) = ticker
+            ws.Cells(OutputRow, 12) = TotalVolume
+            ws.Cells(OutputRow, 10) = YearChange
+            ws.Cells(OutputRow, 11) = PercentChange
+        
+       
+            
+
+              ticker = ws.Cells(i + 1, 1).Value
+                TotalVolume = ws.Cells(i + 1, 7).Value
+        
+                
+                OutputRow = OutputRow + 1
+                OpenPrice = ws.Cells(i + 1, 3).Value
+                
+        Else
+                TotalVolume = TotalVolume + ws.Cells(i + 1, 7)
+        End If
+    
+ 
+    Next i
+
+
+Next
+
+End Sub
